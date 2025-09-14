@@ -99,6 +99,46 @@ document.addEventListener('DOMContentLoaded', () => {
         sugarSavvy: { title: "Sugar Savvy", description: "Analyze a food with less than 5g of sugar.", icon: "fa-candy-cane" }
     };
 
+    // --- 1.5 LOGGING UTILITY ---
+    const Logger = {
+        STORAGE_KEY_LOGS: 'cutevision_logs',
+        MAX_LOG_ENTRIES: 500,
+        log(message, level = 'INFO') {
+            try {
+                let logs = this.getLogs(true); // Get logs without cleaning for now
+                const timestamp = new Date().toISOString();
+                logs.push({ timestamp, level, message });
+
+                // Trim logs if they exceed the max number of entries
+                if (logs.length > this.MAX_LOG_ENTRIES) {
+                    logs = logs.slice(logs.length - this.MAX_LOG_ENTRIES);
+                }
+                saveToStorage(this.STORAGE_KEY_LOGS, logs);
+            } catch (e) {
+                console.error("Failed to write to log:", e);
+            }
+        },
+        getLogs(skipCleaning = false) {
+            let logs = getFromStorage(this.STORAGE_KEY_LOGS, []);
+            if (skipCleaning) return logs;
+
+            const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+            const recentLogs = logs.filter(log => log.timestamp > twentyFourHoursAgo);
+
+            if (recentLogs.length < logs.length) {
+                saveToStorage(this.STORAGE_KEY_LOGS, recentLogs);
+            }
+            return recentLogs;
+        },
+        clearLogs() {
+            saveToStorage(this.STORAGE_KEY_LOGS, []);
+            this.log('Logs cleared.');
+        },
+        formatLogs(logs) {
+            return logs.map(log => `[${new Date(log.timestamp).toLocaleTimeString()}] [${log.level}] ${log.message}`).join('\n');
+        }
+    };
+
     // --- 2. DOM REFERENCES ---
     const DOM = {
         screens: {
@@ -114,7 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
             addHistoryChat: document.getElementById('add-history-chat-btn'),
             closeHistorySelect: document.getElementById('close-history-select-btn'),
             attachImageChat: document.getElementById('attach-image-chat-btn'),
-            removeChatImage: document.getElementById('remove-chat-image-btn')
+            removeChatImage: document.getElementById('remove-chat-image-btn'),
+            copyLogs: document.getElementById('copy-logs-btn'),
+            clearLogs: document.getElementById('clear-logs-btn')
         },
         inputs: {
             upload: document.getElementById('upload-input'), apiKey: document.getElementById('groq-api-key-input'), foodName: document.getElementById('food-name-input'), voiceInputBtn: document.getElementById('voice-input-btn'), countrySelect: document.getElementById('country-select'), languageSelect: document.getElementById('language-select'), historySearch: document.getElementById('history-search-input'), profileName: document.getElementById('profile-name'), profileWeight: document.getElementById('profile-weight'), profileHeight: document.getElementById('profile-height'), profileGoal: document.getElementById('profile-goal'),
@@ -129,11 +171,12 @@ document.addEventListener('DOMContentLoaded', () => {
             historySelection: document.getElementById('history-selection-dialog')
         },
         displays: {
-            streak: document.getElementById('streak-display'), streakCount: document.getElementById('streak-count'), summaryContent: document.getElementById('summary-content'), achievementsList: document.getElementById('achievements-list'), loadingState: document.querySelector('#results-screen .loading-state'), resultsDisplay: document.querySelector('#results-screen .results-display'), foodTitle: document.getElementById('food-title'), foodDescription: document.getElementById('food-description'), nutritionData: document.getElementById('nutrition-data-display'), warningsCard: document.getElementById('warnings-card'), warningsList: document.getElementById('warnings-list'), dangerCard: document.getElementById('danger-card'), historyList: document.getElementById('history-list'), emptyHistoryState: document.getElementById('empty-history-state'), dailyNutritionSummaryGrid: document.getElementById('daily-nutrition-summary-grid'), dailyFoodLog: document.getElementById('daily-food-log'), emptyDailyLogState: document.getElementById('empty-daily-log-state'), historyDetailImage: document.getElementById('history-detail-image'), historyDetailTitle: document.getElementById('history-detail-title'), historyDetailDescription: document.getElementById('history-detail-description'), historyDetailNutrition: document.getElementById('history-detail-nutrition-display'), historyDetailWarningsCard: document.getElementById('history-detail-warnings-card'), historyDetailWarningsList: document.getElementById('history-detail-warnings-list'), historyDetailDangerCard: document.getElementById('history-detail-danger-card'), historyDetailDangerList: document.getElementById('history-detail-danger-list'), historyDetailHealthTipCard: document.getElementById('history-detail-health-tip-card'), historyDetailHealthTip: document.getElementById('history-detail-health-tip'), historyDetailAllergensCard: document.getElementById('history-detail-allergens-card'), historyDetailAllergensList: document.getElementById('history-detail-allergens-list'),
+            streak: document.getElementById('streak-display'), streakCount: document.getElementById('streak-count'), summaryContent: document.getElementById('summary-content'), achievementsList: document.getElementById('achievements-list'), loadingState: document.querySelector('#results-screen .loading-state'), resultsDisplay: document.querySelector('#results-screen .results-display'), foodTitle: document.getElementById('food-title'), foodDescription: document.getElementById('food-description'), nutritionData: document.getElementById('nutrition-data-display'), warningsCard: document.getElementById('warnings-card'), warningsList: document.getElementById('warnings-list'), dangerCard: document.getElementById('danger-card'), historyList: document.getElementById('history-list'), emptyHistoryState: document.getElementById('empty-history-state'), dailyNutritionSummaryGrid: document.getElementById('daily-nutrition-summary-grid'), dailyFoodLog: document.getElementById('daily-food-log'), emptyDailyLogState: document.getElementById('empty-daily-log-state'), historyDetailImage: document.getElementById('history-detail-image'), historyDetailTitle: document.getElementById('history-detail-title'), historyDetailDescription: document.getElementById('history-detail-description'), historyDetailNutrition: document.getElementById('history-detail-nutrition-display'), historyDetailWarningsCard: document.getElementById('history-detail-warnings-card'), historyDetailWarningsList: document.getElementById('history-detail-warnings-list'), historyDetailDangerCard: document.getElementById('history-detail-danger-card'), historyDetailDangerList: document.getElementById('history-detail-danger-list'), historyDetailHealthTipCard: document.getElementById('history-detail-health-tip-card'), historyDetailHealthTip: document.getElementById('history-detail-health-tip'), historyDetailAllergensCard: document.getElementById('history-detail-allergens-card'), historyDetailAllergensList: document.getElementById('history-detail-allergens-list'), dangerList: document.getElementById('danger-list'), allergensList: document.getElementById('allergens-list'), healthTipCard: document.getElementById('health-tip-card'), healthTip: document.getElementById('health-tip'), errorType: document.getElementById('error-type'), errorDetails: document.getElementById('error-details'), rawErrorResponse: document.getElementById('raw-error-response'),
             chatMessages: document.getElementById('chat-messages'),
             historySelectionList: document.getElementById('history-selection-list'),
             chatImagePreviewContainer: document.getElementById('chat-image-preview-container'),
-            chatImagePreview: document.getElementById('chat-image-preview')
+            chatImagePreview: document.getElementById('chat-image-preview'),
+            logsDisplay: document.getElementById('logs-display')
         }
     };
 
@@ -154,12 +197,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     function switchScreen(targetScreenId, isBack = false) {
         if (currentScreenId === targetScreenId && !isBack) return;
+        Logger.log(`Switching to screen: ${targetScreenId}`);
 
         const currentActiveScreen = DOM.screens[currentScreenId];
         const targetScreen = DOM.screens[targetScreenId];
 
         if (!targetScreen) {
             console.error(`Screen "${targetScreenId}" not found.`);
+            Logger.log(`Screen "${targetScreenId}" not found.`, 'ERROR');
             return;
         }
 
@@ -269,9 +314,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 4. CORE APP LOGIC ---
-    async function startCamera() { try { if (currentStream) stopCameraStream(); currentStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false }); DOM.media.cameraPreview.srcObject = currentStream; await DOM.media.cameraPreview.play(); switchScreen('camera'); } catch (err) { displayError(new Error(err.name === "NotAllowedError" ? "Camera access was denied." : "No back camera found."), { name: err.name }); } } 
+    async function startCamera() {
+        try {
+            Logger.log('Attempting to start camera.');
+            if (currentStream) stopCameraStream();
+            // Note: getUserMedia requires a secure context (https or localhost)
+            currentStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+            const video = DOM.media.cameraPreview;
+            video.srcObject = currentStream;
+
+            // iOS Safari needs playsinline+muted to allow autoplay.
+            video.muted = true;
+            video.playsInline = true;
+            video.setAttribute('playsinline', '');
+            video.setAttribute('webkit-playsinline', '');
+            
+            // Attempt to play the video and ignore potential promise rejections.
+            const playPromise = video.play();
+            if (playPromise && playPromise.catch) {
+                playPromise.catch(() => {});
+            }
+
+            // Wait for video metadata to load to prevent capturing a blank frame on iOS.
+            await new Promise(resolve => {
+                video.addEventListener('loadedmetadata', resolve, { once: true });
+                video.addEventListener('canplay', resolve, { once: true });
+            });
+
+            switchScreen('camera');
+        } catch (err) {
+            Logger.log(`Camera error: ${err.name} - ${err.message}`, 'ERROR');
+            displayError(new Error(err.name === "NotAllowedError" ? "Camera access was denied." : "No back camera found."), { name: err.name });
+        }
+    } 
     function stopCameraStream() { if (currentStream) { currentStream.getTracks().forEach(track => track.stop()); currentStream = null; DOM.media.cameraPreview.srcObject = null; } } 
-    function captureImageFromVideo() { const c = document.createElement('canvas'); c.width = DOM.media.cameraPreview.videoWidth; c.height = DOM.media.cameraPreview.videoHeight; c.getContext('2d').drawImage(DOM.media.cameraPreview, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', 0.92); } 
+    function captureImageFromVideo() {
+        Logger.log('Capturing image from video stream.');
+        const video = DOM.media.cameraPreview;
+        // Fallback to client/offset sizes if videoWidth/Height is 0 (common on iOS).
+        const vw = video.videoWidth || video.clientWidth || video.offsetWidth || 128;
+        const vh = video.videoHeight || video.clientHeight || video.offsetHeight || 128;
+        const c = document.createElement('canvas');
+        c.width = vw;
+        c.height = vh;
+        c.getContext('2d').drawImage(video, 0, 0, c.width, c.height);
+        return c.toDataURL('image/jpeg', 0.92);
+    } 
     function renderPreviewImage(base64Image) {
         capturedImageBase64 = base64Image;
         const canvas = DOM.media.capturedImageCanvas;
@@ -306,10 +394,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (DOM.buttons.analyze.disabled) return;
 
         const apiKey = getFromStorage(API_CONFIG.STORAGE_KEY_API_KEY);
-        if (!apiKey) return showAlert('API Key Required', 'Please set your Groq API key in the settings.', () => toggleDialog(DOM.dialogs.settings, true));
+        if (!apiKey) {
+            Logger.log('API key is missing.', 'WARN');
+            return showAlert('API Key Required', 'Please set your Groq API key in the settings.', () => toggleDialog(DOM.dialogs.settings, true));
+        }
         
         const lang = getFromStorage(API_CONFIG.STORAGE_KEY_LANGUAGE, 'en');
         const t = translations[lang];
+        const userFoodName = DOM.inputs.foodName.value.trim();
+        Logger.log('Starting image analysis for: ' + (userFoodName || 'Unknown food'));
         
         DOM.buttons.analyze.disabled = true;
         DOM.buttons.analyze.innerHTML = `<div class="spinner w-5 h-5 border-2 border-white border-t-transparent rounded-full mx-auto"></div>`;
@@ -317,26 +410,62 @@ document.addEventListener('DOMContentLoaded', () => {
         switchScreen('results');
         DOM.displays.loadingState.style.display = 'flex';
         DOM.displays.resultsDisplay.style.display = 'none';
+        
         try {
             const resizedImage = await resizeImage(capturedImageBase64);
-            const userFoodName = DOM.inputs.foodName.value.trim();
             const profile = getFromStorage(API_CONFIG.STORAGE_KEY_PROFILE, {});
             let history = getAnalysisHistory();
             const historySummary = history.slice(0, 5).map(item => `${item.title}: ${item.nutrition.Calories}`).join(', ');
             const promptText = API_CONFIG.API_PROMPT_TEXT.replace('{USER_FOOD_NAME}', userFoodName || 'Not provided').replace('{USER_COUNTRY}', getFromStorage(API_CONFIG.STORAGE_KEY_COUNTRY, 'global')).replace('{USER_PROFILE}', JSON.stringify(profile)).replace('{HISTORY_SUMMARY}', historySummary);
-            const response = await fetch(API_CONFIG.URL, { method: 'POST', headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: API_CONFIG.MODEL, messages: [{ role: 'user', content: [{ type: 'text', text: promptText }, { type: 'image_url', image_url: { url: resizedImage } }] }], max_tokens: 1024 }) });
-            if (!response.ok) throw new Error(`API Error: ${response.status} ${response.statusText} - ${await response.text()}`);
+            
+            Logger.log('Constructed API prompt.');
+            
+            const requestBody = { 
+                model: API_CONFIG.MODEL, 
+                messages: [{ role: 'user', content: [{ type: 'text', text: promptText }, { type: 'image_url', image_url: { url: resizedImage } }] }], 
+                max_tokens: 1024 
+            };
+
+            Logger.log('Making API call to Groq...');
+            const response = await fetch(API_CONFIG.URL, { 
+                method: 'POST', 
+                headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(requestBody) 
+            });
+            
+            Logger.log(`API response status: ${response.status}`);
+            if (!response.ok) {
+                const errorText = await response.text();
+                Logger.log(`API error response: ${errorText}`, 'ERROR');
+                throw new Error(`API Error: ${response.status} ${response.statusText}`);
+            }
+
             const responseJson = await response.json();
             const messageContent = responseJson.choices[0]?.message?.content;
-            if (!messageContent) throw new Error('Invalid response from AI model.');
+            
+            Logger.log(`Received raw message content from API.`);
+            if (!messageContent) {
+                Logger.log('API response is missing message content.', 'ERROR');
+                throw new Error('Invalid response from AI model.');
+            }
+
             let analysisData;
             try {
                 analysisData = JSON.parse(messageContent);
+                Logger.log('Successfully parsed AI response JSON.');
             } catch (e) {
                 console.error("Failed to parse AI response JSON:", messageContent);
+                Logger.log(`Failed to parse AI response JSON. Raw content: ${messageContent}`, 'ERROR');
                 throw new Error('Invalid response from AI model.');
             }
-            if (analysisData.error) throw new Error(`AI Error: ${analysisData.error}`);
+
+            if (analysisData.error) {
+                Logger.log(`AI identified an issue: ${analysisData.error}`, 'WARN');
+                displayError(new Error(analysisData.error), messageContent);
+                return;
+            }
+
+            Logger.log(`Analysis successful for: ${analysisData.title}`);
             analysisData.imageB64 = resizedImage.split(',')[1];
             analysisData.timestamp = new Date().toISOString();
             analysisData.id = `analysis-${Date.now()}`;
@@ -345,16 +474,18 @@ document.addEventListener('DOMContentLoaded', () => {
             saveAnalysisToHistory(history);
             updateStreak();
             checkAchievements(analysisData);
+            
+            // If we got here, it was a success, so show the results.
+            DOM.displays.loadingState.style.display = 'none';
+            DOM.displays.resultsDisplay.style.display = 'flex';
+
         } catch (error) { 
+            Logger.log(`Analysis failed: ${error.message}`, 'ERROR');
             displayError(error, error.message.includes('API Error') ? error.message : null); 
         } 
         finally { 
             DOM.buttons.analyze.disabled = false;
             DOM.buttons.analyze.textContent = t.analyze;
-            if (currentScreenId === 'results') {
-                DOM.displays.loadingState.style.display = 'none';
-                DOM.displays.resultsDisplay.style.display = 'flex';
-            }
         }
     }
 
@@ -450,6 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showHistoryDetail(id) { const item = getAnalysisHistory().find(h => h.id === id); if (item) { DOM.displays.historyDetailImage.src = `data:image/jpeg;base64,${item.imageB64}`; renderAnalysisResults(item, true); switchScreen('historyDetail'); } }
     function clearAllHistory() {
         showConfirmationDialog('Clear History?', 'This will permanently delete all your analysis history.', () => {
+            Logger.log('All history cleared.');
             // Clear history
             saveAnalysisToHistory([]);
 
@@ -521,7 +653,14 @@ document.addEventListener('DOMContentLoaded', () => {
     recognition.onend = () => voiceButton.classList.remove('ring-2', 'ring-primary');
     recognition.onerror = (event) => showAlert('Speech Error', `Speech recognition error: ${event.error}`);
     recognition.start(); }
-    function displayError(error, rawResponse = null) { console.error(error); if(DOM.displays.errorType) DOM.displays.errorType.textContent = error.name || 'Error'; if(DOM.displays.errorDetails) DOM.displays.errorDetails.textContent = error.message || 'An unknown error occurred.'; if(DOM.displays.rawErrorResponse) { DOM.displays.rawErrorResponse.textContent = rawResponse ? JSON.stringify(rawResponse, null, 2) : ''; DOM.displays.rawErrorResponse.style.display = rawResponse ? 'block' : 'none'; } switchScreen('error'); } 
+    function displayError(error, rawResponse = null) { 
+        Logger.log(`Error displayed: ${error.message}`, 'ERROR');
+        console.error(error); 
+        if(DOM.displays.errorType) DOM.displays.errorType.textContent = error.name || 'Error'; 
+        if(DOM.displays.errorDetails) DOM.displays.errorDetails.textContent = error.message || 'An unknown error occurred.'; 
+        if(DOM.displays.rawErrorResponse) { DOM.displays.rawErrorResponse.textContent = rawResponse ? JSON.stringify(rawResponse, null, 2) : ''; DOM.displays.rawErrorResponse.style.display = rawResponse ? 'block' : 'none'; } 
+        switchScreen('error'); 
+    } 
     function showConfirmationDialog(title, message, onConfirm) { const dialog = DOM.dialogs.confirmation;
     if (!dialog) return;
     const titleEl = dialog.querySelector('#confirmation-dialog-title');
@@ -535,7 +674,7 @@ document.addEventListener('DOMContentLoaded', () => {
         newConfirmBtn.addEventListener('click', () => onConfirm(), { once: true });
         DOM.buttons.confirmAction = newConfirmBtn;
     }
-    toggleDialog(dialog, true); }
+    toggleDialog(dialog, true); } 
     function showAlert(title, message, onConfirm) { const dialog = DOM.dialogs.confirmation;
     if (!dialog) return;
     const confirmBtn = dialog.querySelector('#confirm-action-btn');
@@ -571,6 +710,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const messageText = DOM.inputs.chat.value.trim();
         if (!messageText && !chatImageBase64) return;
 
+        Logger.log('Sending chat message.');
         let userContent = [];
         if (messageText) {
             userContent.push({ type: 'text', text: messageText });
@@ -623,6 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
         } catch (error) {
+            Logger.log(`Chat API Error: ${error.message}`, 'ERROR');
             console.error('Chat API Error:', error);
             chatHistory.push({ role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' });
             renderChatMessages();
@@ -724,6 +865,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 5. INITIALIZATION ---
     function init() {
+        Logger.log('App initializing.');
         updateUIStrings();
         switchScreen('main');
         loadVoices();
@@ -740,6 +882,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'history': button.addEventListener('click', () => switchScreen('history')); break;
                 case 'nutritionTracker': button.addEventListener('click', () => switchScreen('dailyNutrition')); break;
                 case 'settings': button.addEventListener('click', () => {
+                    Logger.log('Settings dialog opened.');
                     const profile = getFromStorage(API_CONFIG.STORAGE_KEY_PROFILE, {});
                     if(DOM.inputs.profileName) DOM.inputs.profileName.value = profile.name || '';
                     if(DOM.inputs.profileWeight) DOM.inputs.profileWeight.value = profile.weight || '';
@@ -763,13 +906,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'backFromResults': case 'newPhoto': button.addEventListener('click', resetToMainScreen); break;
                 case 'backToMainFromHistory': button.addEventListener('click', goBack); break;
                 case 'backToMainFromNutrition': button.addEventListener('click', goBack); break;
+                case 'backToMainFromError': button.addEventListener('click', resetToMainScreen); break;
                 case 'analyze': button.addEventListener('click', analyzeImageWithGroq); break;
                 case 'clearHistory': button.addEventListener('click', clearAllHistory); break;
-                case 'resetDailyNutrition': button.addEventListener('click', () => showConfirmationDialog('Reset Daily Totals?', 'This will clear all logged food and reset your daily nutrition totals.', () => { localStorage.removeItem(API_CONFIG.STORAGE_KEY_DAILY_NUTRITION); renderDailyNutritionSummary(); renderDailyFoodLog(); toggleDialog(DOM.dialogs.confirmation, false); })); break;
+                case 'resetDailyNutrition': button.addEventListener('click', () => showConfirmationDialog('Reset Daily Totals?', 'This will clear all logged food and reset your daily nutrition totals.', () => { Logger.log('Daily nutrition reset.'); localStorage.removeItem(API_CONFIG.STORAGE_KEY_DAILY_NUTRITION); renderDailyNutritionSummary(); renderDailyFoodLog(); toggleDialog(DOM.dialogs.confirmation, false); })); break;
                 case 'speakResults': button.addEventListener('click', speakAnalysisResults); break;
                 case 'share': button.addEventListener('click', shareResults); break;
                 case 'closeSettings': button.addEventListener('click', () => toggleDialog(DOM.dialogs.settings, false)); break;
                 case 'saveSettings': button.addEventListener('click', () => {
+                    Logger.log('Settings saved.');
                     if(DOM.inputs.apiKey) saveToStorage(API_CONFIG.STORAGE_KEY_API_KEY, DOM.inputs.apiKey.value.trim());
                     if(DOM.inputs.countrySelect) saveToStorage(API_CONFIG.STORAGE_KEY_COUNTRY, DOM.inputs.countrySelect.value);
                     if(DOM.inputs.languageSelect) saveToStorage(API_CONFIG.STORAGE_KEY_LANGUAGE, DOM.inputs.languageSelect.value);
@@ -785,12 +930,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateUIStrings();
                 }); break;
                 case 'closeConfirmation': case 'cancelConfirmation': button.addEventListener('click', () => toggleDialog(DOM.dialogs.confirmation, false)); break;
+                case 'copyLogs': button.addEventListener('click', () => {
+                    const logs = DOM.displays.logsDisplay.textContent;
+                    navigator.clipboard.writeText(logs).then(() => {
+                        showAlert('Success', 'Logs copied to clipboard.');
+                        Logger.log('Logs copied to clipboard.');
+                    }).catch(err => {
+                        showAlert('Error', 'Failed to copy logs.');
+                        Logger.log(`Failed to copy logs: ${err.message}`, 'ERROR');
+                    });
+                }); break;
+                case 'clearLogs': button.addEventListener('click', () => {
+                    Logger.clearLogs();
+                    renderLogs();
+                }); break;
             }
         });
 
         if(DOM.inputs.upload) {
             DOM.inputs.upload.addEventListener('change', async (e) => { 
                 if (e.target.files[0]) { 
+                    Logger.log('Image selected for upload.');
                     try { 
                         const base64 = await fileToBase64(e.target.files[0]); 
                         renderPreviewImage(base64); 
@@ -839,12 +999,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     tabs.forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
                     tabContents.forEach(c => c.classList.add('hidden'));
-                    const tabContent = document.getElementById(tab.dataset.tab);
+                    const tabContentId = tab.dataset.tab;
+                    const tabContent = document.getElementById(tabContentId);
                     if (tabContent) {
                         tabContent.classList.remove('hidden');
                     }
+                    if (tabContentId === 'tab-logs') {
+                        renderLogs();
+                    }
                 });
             });
+        }
+    }
+
+    function renderLogs() {
+        const logs = Logger.getLogs();
+        if (DOM.displays.logsDisplay) {
+            DOM.displays.logsDisplay.textContent = Logger.formatLogs(logs.slice().reverse());
         }
     }
 
