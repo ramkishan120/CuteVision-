@@ -52,12 +52,12 @@
     </style>
 </head>
 <body class="bg-gray-200 flex justify-center items-center h-screen overflow-hidden font-body text-text-dark">
-    <div id="app-container" class="w-full max-w-md h-screen sm:h-[95vh] sm:max-h-[850px] bg-background-light sm:rounded-4xl shadow-2xl relative overflow-hidden flex flex-col">
+    <div id="app-container" class="w-full max-w-md lg:max-w-lg h-screen sm:h-[95vh] sm:max-h-[850px] bg-background-light sm:rounded-4xl shadow-2xl relative overflow-hidden flex flex-col">
         <!-- Main Screen -->
         <main id="main-screen" class="app-screen flex flex-col">
             <header class="flex justify-between items-center p-5 bg-background-light border-b border-gray-100">
                 <h1 class="font-heading text-2xl text-primary" data-translate="appName">CuteVision</h1>
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 sm:gap-4">
                     <div id="streak-display" class="flex items-center gap-1 text-orange-500 font-bold hidden">
                         <i class="fas fa-fire"></i>
                         <span id="streak-count">0</span>
@@ -390,13 +390,33 @@
 
         <!-- Confirmation Dialog -->
         <div id="confirmation-dialog" class="app-dialog hidden opacity-0 fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
-            <div class="dialog-content bg-card-bg rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
+            <div class="dialog-content bg-card-bg rounded-2xl shadow-xl w-full max-w-sm p-6 text-center relative">
+                <button id="close-confirmation-btn" class="absolute top-2 right-2 text-gray-400 hover:text-primary text-2xl w-8 h-8">&times;</button>
                 <h3 id="confirmation-dialog-title" class="font-heading text-xl text-text-dark mb-2" data-translate="areYouSure">Are you sure?</h3>
                 <p id="confirmation-message" class="text-text-light mb-6" data-translate="actionCannotBeUndone">This action cannot be undone.</p>
                 <div class="flex justify-center gap-4">
                     <button id="cancel-confirmation-btn" class="flex-1 bg-gray-200 text-text-dark font-bold py-3 px-6 rounded-full hover:bg-gray-300 transition" data-translate="cancel">Cancel</button>
                     <button id="confirm-action-btn" class="flex-1 bg-error text-white font-bold py-3 px-6 rounded-full hover:bg-error/90 transition" data-translate="confirm">Confirm</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Nutrient Info Dialog -->
+        <div id="nutrient-info-dialog" class="app-dialog hidden opacity-0 fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
+            <div class="dialog-content bg-card-bg rounded-2xl shadow-xl w-full max-w-sm flex flex-col max-h-[80vh]">
+                <header class="flex justify-between items-center p-5 border-b border-gray-100">
+                    <h3 id="nutrient-info-title" class="font-heading text-xl text-primary"></h3>
+                    <button id="close-nutrient-info-btn" class="text-gray-400 hover:text-primary text-2xl w-8 h-8">&times;</button>
+                </header>
+                <div id="nutrient-info-content" class="flex-grow overflow-y-auto p-6 space-y-4 text-text-light">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+                <footer class="p-4 bg-gray-50 border-t border-gray-100">
+                    <button id="speak-nutrient-info-btn" class="w-full bg-primary text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-primary/90 transition flex items-center justify-center gap-2">
+                        <i class="fas fa-volume-up"></i>
+                        <span>Speak Info</span>
+                    </button>
+                </footer>
             </div>
         </div>
     </div>
