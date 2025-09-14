@@ -41,15 +41,63 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const NUTRIENT_COLORS = { Calories: '#F59E0B', Protein: '#3B82F6', Fat: '#F43F5E', Carbohydrates: '#8B5CF6', Sugar: '#EC4899', Fiber: '#10B981', Sodium: '#6B7280' };
     const NUTRIENT_MAX_VALUES = { Calories: 2000, Protein: 50, Fat: 70, Carbohydrates: 300, Sugar: 90, Fiber: 30, Sodium: 2300 };
+    
+    const NUTRIENT_INFO = {
+    Calories: {
+        title: 'About Calories',
+        what_is: 'A calorie is a unit of energy. In nutrition, calories refer to the energy people get from the food and drink they consume, and the energy they use in physical activity.',
+        intake: 'The recommended daily calorie intake depends on age, metabolism, and levels of physical activity. A general guide is around 2,000 calories per day for women and 2,500 for men.'
+    },
+    Protein: {
+        title: 'About Protein',
+        what_is: 'Protein is a macronutrient that is essential for building muscle mass. It is commonly found in animal products, though is also present in other sources, such as nuts and legumes.',
+        intake: 'The recommended daily intake for protein is 0.8 grams of protein per kilogram of body weight. This amount can increase for athletes or those looking to build muscle.'
+    },
+    Fat: {
+        title: 'About Fat',
+        what_is: 'Fat is a macronutrient that provides energy and helps your body absorb vitamins. It is important to distinguish between healthy fats (like those in avocados and nuts) and unhealthy fats (like trans fats).',
+        intake: 'The dietary reference intake (DRI) for fat in adults is 20% to 35% of total calories from fat. This is about 44 to 77 grams of fat per day if you eat 2,000 calories a day.'
+    },
+    Carbohydrates: {
+        title: 'About Carbohydrates',
+        what_is: 'Carbohydrates are a macronutrient that provides the body with its main source of energy. They include sugars, starches, and fiber.',
+        intake: 'The recommended daily intake for carbohydrates is 45% to 65% of your total daily calories. For a 2,000-calorie diet, this is about 225 to 325 grams per day.'
+    },
+    Sugar: {
+        title: 'About Sugar',
+        what_is: 'Sugar is a type of carbohydrate. While some sugars are naturally occurring in foods like fruits, added sugars are common in processed foods and can contribute to health problems.',
+        intake: 'The American Heart Association recommends no more than 25 grams (6 teaspoons) of added sugar per day for women and 36 grams (9 teaspoons) for men.'
+    },
+    Fiber: {
+        title: 'About Fiber',
+        what_is: 'Fiber is a type of carbohydrate that the body can\'t digest. It helps regulate the body\'s use of sugars, helping to keep hunger and blood sugar in check.',
+        intake: 'The recommended daily fiber intake is 25 grams for women and 38 grams for men.'
+    },
+    Sodium: {
+        title: 'About Sodium',
+        what_is: 'Sodium is a mineral that\'s essential for life. It\'s regulated by your kidneys, and it helps control your body\'s fluid balance. It also helps send nerve impulses and affects muscle function.',
+        intake: 'The recommended daily sodium intake is less than 2,300 mg per day. High sodium intake is linked to high blood pressure and an increased risk of heart disease.'
+    }
+};
     const translations = {
         en: {
-            appName: 'CuteVision', welcomeTitle: 'Welcome!', welcomeMessage: 'Get instant nutritional insights about your food.', useCamera: 'Use Camera', uploadImage: 'Upload Image', imagePreview: 'Image Preview', enterFoodName: 'Optional: Enter food name (e.g., \'Apple\')', retake: 'Retake', analyze: 'Analyze', analysisResults: 'Analysis Results', analyzingFood: 'Analyzing your food...', nutritionSummary: 'Nutrition Summary', warnings: 'Warnings', healthRisks: 'Health Risks', healthyTip: 'Healthy Tip', analyzeAnotherPhoto: 'Analyze Another Photo', history: 'History', noHistoryYet: 'No history yet!', startAnalyzingToSeeHistory: 'Start analyzing to see your history.', clearHistory: 'Clear History', historyDetail: 'History Detail', oops: 'Oops!', anErrorOccurred: 'An Error Occurred', somethingWentWrong: 'Something went wrong.', goToMainScreen: 'Go to Main Screen', settings: 'Settings', groqApiKey: 'Groq API Key', apiKeyHint: 'Your API key is stored locally and never shared.', save: 'Save', areYouSure: 'Are you sure?', actionCannotBeUndone: 'This action cannot be undone.', cancel: 'Cancel', confirm: 'Confirm', deleteItem: 'Delete Item?', deleteItemMessage: 'This will permanently delete this item from your history.', clearHistoryConfirm: 'Clear History?', clearHistoryMessage: 'This will permanently delete all your analysis history.', dailyNutrition: 'Daily Nutrition', resetDailyTotals: 'Reset Daily Totals', todaysTotals: 'Today\'s Totals', dailyLog: 'Daily Log', noFoodLoggedToday: 'No food logged today!', analyzeFoodToAdd: 'Analyze food to add to your daily totals.', resetDailyTotalsConfirm: 'Reset Daily Totals?', resetDailyTotalsMessage: 'This will clear all logged food and reset your daily nutrition totals.', deleteLogEntry: 'Delete Log Entry?', deleteLogEntryMessage: 'This will remove this food from your daily totals.', undoLastLogAction: 'Undo Last Log Action', lastActionUndone: 'Last action undone!', noActionToUndo: 'No action to undo.', apiKeyRequired: 'API Key Required', inputRequired: 'Input Required', browserNotSupported: 'Browser Not Supported', speechError: 'Speech Error', defaultCountry: 'Default Country for Analysis', globalNutrition: 'Global (General Nutrition)', us: 'United States', in: 'India', gb: 'United Kingdom', ca: 'Canada', au: 'Australia', de: 'Germany', fr: 'France', jp: 'Japan', cn: 'China', mx: 'Mexico', countryHint: 'This helps tailor nutritional advice to local foods.', language: 'Language', selectLanguage: 'Select your preferred language.', settingsSaved: 'Settings Saved', defaultCountryUpdated: 'Default country for analysis updated.', languageUpdated: 'Language updated!', previousDays: 'Previous Days', noPreviousDailyLogs: 'No previous daily logs!', dailySummariesWillAppearHere: 'Daily summaries will appear here.'
+            appName: 'CuteVision', welcomeTitle: 'Welcome!', welcomeMessage: 'Get instant nutritional insights about your food.', useCamera: 'Use Camera', uploadImage: 'Upload Image', imagePreview: 'Image Preview', enterFoodName: 'Optional: Enter food name (e.g., \'Apple\')', retake: 'Retake', analyze: 'Analyze', analysisResults: 'Analysis Results', analyzingFood: 'Analyzing your food...', nutritionSummary: 'Nutrition Summary', warnings: 'Warnings', healthRisks: 'Health Risks', healthyTip: 'Healthy Tip', analyzeAnotherPhoto: 'Analyze Another Photo', history: 'History', noHistoryYet: 'No history yet!', startAnalyzingToSeeHistory: 'Start analyzing to see your history.', clearHistory: 'Clear History', historyDetail: 'History Detail', oops: 'Oops!', anErrorOccurred: 'An Error Occurred', somethingWentWrong: 'Something went wrong.', goToMainScreen: 'Go to Main Screen', settings: 'Settings', groqApiKey: 'Groq API Key', apiKeyHint: 'Your API key is stored locally and never shared.', save: 'Save', areYouSure: 'Are you sure?', actionCannotBeUndone: 'This action cannot be undone.', cancel: 'Cancel', confirm: 'Confirm', deleteItem: 'Delete Item?', deleteItemMessage: 'This will permanently delete this item from your history.', clearHistoryConfirm: 'Clear History?', clearHistoryMessage: 'This will permanently delete all your analysis history.', dailyNutrition: 'Daily Nutrition', resetDailyTotals: 'Reset Daily Totals', todaysTotals: 'Today\'s Totals', dailyLog: 'Daily Log', noFoodLoggedToday: 'No food logged today!', analyzeFoodToAdd: 'Analyze food to add to your daily totals.', resetDailyTotalsConfirm: 'Reset Daily Totals?', resetDailyTotalsMessage: 'This will clear all logged food and reset your daily nutrition totals.', deleteLogEntry: 'Delete Log Entry?', deleteLogEntryMessage: 'This will remove this food from your daily totals.', undoLastLogAction: 'Undo Last Log Action', lastActionUndone: 'Last action undone!', noActionToUndo: 'No action to undo.', apiKeyRequired: 'API Key Required', apiKeyMissing: 'Please provide your Groq API key in the settings.', inputRequired: 'Input Required', browserNotSupported: 'Browser Not Supported', speechError: 'Speech Error', defaultCountry: 'Default Country for Analysis', globalNutrition: 'Global (General Nutrition)', us: 'United States', in: 'India', gb: 'United Kingdom', ca: 'Canada', au: 'Australia', de: 'Germany', fr: 'France', jp: 'Japan', cn: 'China', mx: 'Mexico', countryHint: 'This helps tailor nutritional advice to local foods.', language: 'Language', selectLanguage: 'Select your preferred language.', settingsSaved: 'Settings Saved', defaultCountryUpdated: 'Default country for analysis updated.', languageUpdated: 'Language updated!', previousDays: 'Previous Days', noPreviousDailyLogs: 'No previous daily logs!', dailySummariesWillAppearHere: 'Daily summaries will appear here.'
         },
         hi: {
-            appName: 'क्यूटविजन', welcomeTitle: 'स्वागत है!', welcomeMessage: 'अपने भोजन के बारे में तत्काल पोषण संबंधी जानकारी प्राप्त करें।', useCamera: 'कैमरा का उपयोग करें', uploadImage: 'छवि अपलोड करें', imagePreview: 'छवि पूर्वावलोकन', enterFoodName: 'वैकल्पिक: भोजन का नाम दर्ज करें (जैसे \'सेब\')', retake: 'पुनः लें', analyze: 'विश्लेषण करें', analysisResults: 'विश्लेषण परिणाम', analyzingFood: 'आपके भोजन का विश्लेषण कर रहा है...', nutritionSummary: 'पोषण सारांश', warnings: 'चेतावनी', healthRisks: 'स्वास्थ्य जोखिम', healthyTip: 'स्वस्थ टिप', analyzeAnotherPhoto: 'एक और तस्वीर का विश्लेषण करें', history: 'इतिहास', noHistoryYet: 'अभी तक कोई इतिहास नहीं!', startAnalyzingToSeeHistory: 'अपना इतिहास देखने के लिए विश्लेषण करना शुरू करें।', clearHistory: 'इतिहास साफ़ करें', historyDetail: 'इतिहास विवरण', oops: 'ऊप्स!', anErrorOccurred: 'एक त्रुटि हुई', somethingWentWrong: 'कुछ गलत हो गया।', goToMainScreen: 'मुख्य स्क्रीन पर जाएं', settings: 'सेटिंग्स', groqApiKey: 'ग्रॉक एपीआई कुंजी', apiKeyHint: 'आपकी एपीआई कुंजी स्थानीय रूप से संग्रहीत है और कभी साझा नहीं की जाती है।', save: 'सहेजें', areYouSure: 'क्या आप निश्चित हैं?', actionCannotBeUndone: 'यह कार्रवाई पूर्ववत नहीं की जा सकती है।', cancel: 'रद्द करें', confirm: 'पुष्टि करें', deleteItem: 'आइटम हटाएं?', deleteItemMessage: 'यह आपके इतिहास से इस आइटम को स्थायी रूप से हटा देगा।', clearHistoryConfirm: 'इतिहास साफ़ करें?', clearHistoryMessage: 'यह आपके सभी विश्लेषण इतिहास को स्थायी रूप से हटा देगा।', dailyNutrition: 'दैनिक पोषण', resetDailyTotals: 'दैनिक कुल रीसेट करें', todaysTotals: 'आज का कुल', dailyLog: 'दैनिक लॉग', noFoodLoggedToday: 'आज कोई भोजन लॉग नहीं किया गया!', analyzeFoodToAdd: 'अपने दैनिक कुल में जोड़ने के लिए भोजन का विश्लेषण करें।', resetDailyTotalsConfirm: 'दैनिक कुल रीसेट करें?', resetDailyTotalsMessage: 'यह सभी लॉग किए गए भोजन को साफ़ कर देगा और आपके दैनिक पोषण कुल को रीसेट कर देगा।', deleteLogEntry: 'लॉग प्रविष्टि हटाएं?', deleteLogEntryMessage: 'यह आपके दैनिक कुल से इस भोजन को हटा देगा।', undoLastLogAction: 'अंतिम लॉग कार्रवाई पूर्ववत करें', lastActionUndone: 'अंतिम कार्रवाई पूर्ववत की गई!', noActionToUndo: 'पूर्ववत करने के लिए कोई कार्रवाई नहीं।', apiKeyRequired: 'एपीआई कुंजी आवश्यक है', inputRequired: 'इनपुट आवश्यक है', browserNotSupported: 'ब्राउज़र समर्थित नहीं है', speechError: 'भाषण त्रुटि', defaultCountry: 'विश्लेषण के लिए डिफ़ॉल्ट देश', globalNutrition: 'वैश्विक (सामान्य पोषण)', us: 'संयुक्त राज्य अमेरिका', in: 'भारत', gb: 'यूनाइटेड किंगडम', ca: 'कनाडा', au: 'ऑस्ट्रेलिया', de: 'जर्मनी', fr: 'फ्रांस', jp: 'जापान', cn: 'चीन', mx: 'मेक्सिको', countryHint: 'यह स्थानीय खाद्य पदार्थों के लिए पोषण संबंधी सलाह को अनुकूलित करने में मदद करता है।', language: 'भाषा', selectLanguage: 'अपनी पसंदीदा भाषा का चयन करें।', settingsSaved: 'सेटिंग्स सहेजी गईं', defaultCountryUpdated: 'विश्लेषण के लिए डिफ़ॉल्ट देश अपडेट किया गया।', languageUpdated: 'भाषा अपडेट की गई!', previousDays: 'पिछले दिन', noPreviousDailyLogs: 'कोई पिछला दैनिक लॉग नहीं!', dailySummariesWillAppearHere: 'दैनिक सारांश यहां दिखाई देंगे।'
+            appName: 'क्यूटविजन', welcomeTitle: 'स्वागत है!', welcomeMessage: 'अपने भोजन के बारे में तत्काल पोषण संबंधी जानकारी प्राप्त करें।', useCamera: 'कैमरा का उपयोग करें', uploadImage: 'छवि अपलोड करें', imagePreview: 'छवि पूर्वावलोकन', enterFoodName: 'वैकल्पिक: भोजन का नाम दर्ज करें (जैसे \'सेब\')', retake: 'पुनः लें', analyze: 'विश्लेषण करें', analysisResults: 'विश्लेषण परिणाम', analyzingFood: 'आपके भोजन का विश्लेषण कर रहा है...', nutritionSummary: 'पोषण सारांश', warnings: 'चेतावनी', healthRisks: 'स्वास्थ्य जोखिम', healthyTip: 'स्वस्थ टिप', analyzeAnotherPhoto: 'एक और तस्वीर का विश्लेषण करें', history: 'इतिहास', noHistoryYet: 'अभी तक कोई इतिहास नहीं!', startAnalyzingToSeeHistory: 'अपना इतिहास देखने के लिए विश्लेषण करना शुरू करें।', clearHistory: 'इतिहास साफ़ करें', historyDetail: 'इतिहास विवरण', oops: 'ऊप्स!', anErrorOccurred: 'एक त्रुटि हुई', somethingWentWrong: 'कुछ गलत हो गया।', goToMainScreen: 'मुख्य स्क्रीन पर जाएं', settings: 'सेटिंग्स', groqApiKey: 'ग्रॉक एपीआई कुंजी', apiKeyHint: 'आपकी एपीआई कुंजी स्थानीय रूप से संग्रहीत है और कभी साझा नहीं की जाती है।', save: 'सहेजें', areYouSure: 'क्या आप निश्चित हैं?', actionCannotBeUndone: 'यह कार्रवाई पूर्ववत नहीं की जा सकती है।', cancel: 'रद्द करें', confirm: 'पुष्टि करें', deleteItem: 'आइटम हटाएं?', deleteItemMessage: 'यह आपके इतिहास से इस आइटम को स्थायी रूप से हटा देगा।', clearHistoryConfirm: 'इतिहास साफ़ करें?', clearHistoryMessage: 'यह आपके सभी विश्लेषण इतिहास को स्थायी रूप से हटा देगा।', dailyNutrition: 'दैनिक पोषण', resetDailyTotals: 'दैनिक कुल रीसेट करें', todaysTotals: 'आज का कुल', dailyLog: 'दैनिक लॉग', noFoodLoggedToday: 'आज कोई भोजन लॉग नहीं किया गया!', analyzeFoodToAdd: 'अपने दैनिक कुल में जोड़ने के लिए भोजन का विश्लेषण करें।', resetDailyTotalsConfirm: 'दैनिक कुल रीसेट करें?', resetDailyTotalsMessage: 'यह सभी लॉग किए गए भोजन को साफ़ कर देगा और आपके दैनिक पोषण कुल को रीसेट कर देगा।', deleteLogEntry: 'लॉग प्रविष्टि हटाएं?', deleteLogEntryMessage: 'यह आपके दैनिक कुल से इस भोजन को हटा देगा।', undoLastLogAction: 'पिछली कार्रवाई पूर्ववत करें', lastActionUndone: 'पिछली कार्रवाई पूर्ववत की गई!', noActionToUndo: 'पूर्ववत करने के लिए कोई कार्रवाई नहीं।', apiKeyRequired: 'एपीआई कुंजी आवश्यक है', apiKeyMissing: 'कृपया सेटिंग्स में अपनी ग्रॉक एपीआई कुंजी प्रदान करें।' 
         }
     };
-    const ACHIEVEMENTS = { scan1: { title: "First Scan!", description: "Analyze your first food item.", icon: "fa-camera" }, scan5: { title: "Food Explorer", description: "Analyze 5 different food items.", icon: "fa-compass" }, streak3: { title: "Healthy Habit", description: "Maintain a 3-day streak.", icon: "fa-calendar-check" }, proteinPro: { title: "Protein Pro", description: "Log over 50g of protein in one day.", icon: "fa-dumbbell" } };
+    const ACHIEVEMENTS = { 
+        scan1: { title: "First Scan!", description: "Analyze your first food item.", icon: "fa-camera" }, 
+        scan5: { title: "Food Explorer", description: "Analyze 5 different food items.", icon: "fa-compass" }, 
+        streak3: { title: "Healthy Habit", description: "Maintain a 3-day streak.", icon: "fa-calendar-check" }, 
+        proteinPro: { title: "Protein Pro", description: "Log over 50g of protein in one day.", icon: "fa-dumbbell" },
+        varietyStar: { title: "Variety Star", description: "Analyze 10 different food items.", icon: "fa-star" },
+        weeklyWarrior: { title: "Weekly Warrior", description: "Maintain a 7-day streak.", icon: "fa-calendar-alt" },
+        calorieCounter: { title: "Calorie Counter", description: "Log over 2000 calories in one day.", icon: "fa-calculator" },
+        fiberFanatic: { title: "Fiber Fanatic", description: "Log over 30g of fiber in one day.", icon: "fa-leaf" },
+        sugarSavvy: { title: "Sugar Savvy", description: "Analyze a food with less than 5g of sugar.", icon: "fa-candy-cane" }
+    };
 
     // --- 2. DOM REFERENCES ---
     const DOM = {
@@ -81,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             historySelection: document.getElementById('history-selection-dialog')
         },
         displays: {
-            streak: document.getElementById('streak-display'), streakCount: document.getElementById('streak-count'), summaryContent: document.getElementById('summary-content'), achievementsList: document.getElementById('achievements-list'), loadingState: document.querySelector('#results-screen .loading-state'), resultsDisplay: document.querySelector('#results-screen .results-display'), foodTitle: document.getElementById('food-title'), foodDescription: document.getElementById('food-description'), nutritionData: document.getElementById('nutrition-data-display'), warningsCard: document.getElementById('warnings-card'), warningsList: document.getElementById('warnings-list'), dangerCard: document.getElementById('danger-card'), historyList: document.getElementById('history-list'), emptyHistoryState: document.getElementById('empty-history-state'), dailyNutritionSummaryGrid: document.getElementById('daily-nutrition-summary-grid'), dailyFoodLog: document.getElementById('daily-food-log'), emptyDailyLogState: document.getElementById('empty-daily-log-state'), historyDetailImage: document.getElementById('history-detail-image'), historyDetailTitle: document.getElementById('history-detail-title'), historyDetailDescription: document.getElementById('history-detail-description'), historyDetailNutrition: document.getElementById('history-detail-nutrition-display'), historyDetailWarningsCard: document.getElementById('history-detail-warnings-card'), historyDetailWarningsList: document.getElementById('history-detail-warnings-list'), historyDetailDangerCard: document.getElementById('history-detail-danger-card'), historyDetailDangerList: document.getElementById('history-detail-danger-list'), historyDetailHealthTipCard: document.getElementById('history-detail-health-tip-card'), historyDetailHealthTip: document.getElementById('history-detail-health-tip'), historyDetailAllergensCard: document.getElementById('history-detail-allergens-card'), historyDetailAllergensList: document.getElementById('history-detail-allergens-list'), errorType: document.getElementById('error-type'), errorDetails: document.getElementById('error-details'), rawErrorResponse: document.getElementById('raw-error-response'),
+            streak: document.getElementById('streak-display'), streakCount: document.getElementById('streak-count'), summaryContent: document.getElementById('summary-content'), achievementsList: document.getElementById('achievements-list'), loadingState: document.querySelector('#results-screen .loading-state'), resultsDisplay: document.querySelector('#results-screen .results-display'), foodTitle: document.getElementById('food-title'), foodDescription: document.getElementById('food-description'), nutritionData: document.getElementById('nutrition-data-display'), warningsCard: document.getElementById('warnings-card'), warningsList: document.getElementById('warnings-list'), dangerCard: document.getElementById('danger-card'), historyList: document.getElementById('history-list'), emptyHistoryState: document.getElementById('empty-history-state'), dailyNutritionSummaryGrid: document.getElementById('daily-nutrition-summary-grid'), dailyFoodLog: document.getElementById('daily-food-log'), emptyDailyLogState: document.getElementById('empty-daily-log-state'), historyDetailImage: document.getElementById('history-detail-image'), historyDetailTitle: document.getElementById('history-detail-title'), historyDetailDescription: document.getElementById('history-detail-description'), historyDetailNutrition: document.getElementById('history-detail-nutrition-display'), historyDetailWarningsCard: document.getElementById('history-detail-warnings-card'), historyDetailWarningsList: document.getElementById('history-detail-warnings-list'), historyDetailDangerCard: document.getElementById('history-detail-danger-card'), historyDetailDangerList: document.getElementById('history-detail-danger-list'), historyDetailHealthTipCard: document.getElementById('history-detail-health-tip-card'), historyDetailHealthTip: document.getElementById('history-detail-health-tip'), historyDetailAllergensCard: document.getElementById('history-detail-allergens-card'), historyDetailAllergensList: document.getElementById('history-detail-allergens-list'),
             chatMessages: document.getElementById('chat-messages'),
             historySelectionList: document.getElementById('history-selection-list'),
             chatImagePreviewContainer: document.getElementById('chat-image-preview-container'),
@@ -90,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- 3. STATE & UTILITY ---
-    let currentStream = null, capturedImageBase64 = null, currentScreenId = null, historyStack = [], lastAnalysisData = null, voices = [], chatImageBase64 = null;
+    let currentStream = null, capturedImageBase64 = null, currentScreenId = null, voices = [], chatImageBase64 = null;
 
     function getFromStorage(key, defaultValue = null) {
         const item = localStorage.getItem(key);
@@ -105,24 +153,52 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(key, JSON.stringify(value));
     }
     function switchScreen(targetScreenId, isBack = false) {
-        if (currentScreenId === targetScreenId) return;
+        if (currentScreenId === targetScreenId && !isBack) return;
+
         const currentActiveScreen = DOM.screens[currentScreenId];
         const targetScreen = DOM.screens[targetScreenId];
+
         if (!targetScreen) {
             console.error(`Screen "${targetScreenId}" not found.`);
             return;
         }
-        if (!isBack && currentScreenId) {
-            historyStack.push(currentScreenId);
+
+        if (!isBack) {
+            history.pushState({ screen: targetScreenId }, ``, `#${targetScreenId}`);
         }
+
         if (currentActiveScreen) {
             currentActiveScreen.classList.remove('active');
         }
+
+        // Render content for specific screens
+        if (targetScreenId === 'history') {
+            renderHistoryList();
+        } else if (targetScreenId === 'dailyNutrition') {
+            renderDailyNutritionSummary();
+            renderDailyFoodLog();
+        } else if (targetScreenId === 'achievements') {
+            renderAchievements();
+        } else if (targetScreenId === 'summary') {
+            renderSummaryScreen();
+        }
+
         targetScreen.classList.add('active');
         currentScreenId = targetScreenId;
     }
     function goBack() {
-        switchScreen(historyStack.pop() || 'main', true);
+        history.back();
+    }
+    window.onpopstate = function(event) {
+        if (event.state && event.state.screen) {
+            switchScreen(event.state.screen, true);
+        } else {
+            switchScreen('main', true);
+        }
+    };
+    function resetToMainScreen() {
+        history.replaceState({ screen: 'main' }, ``, `#main`);
+        switchScreen('main');
     }
     function fileToBase64(file) {
         return new Promise((resolve, reject) => {
@@ -166,6 +242,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('[data-translate]').forEach(el => { if(t[el.dataset.translate]) el.textContent = t[el.dataset.translate]; });
         document.querySelectorAll('[data-translate-placeholder]').forEach(el => { if(t[el.dataset.translatePlaceholder]) el.placeholder = t[el.dataset.translatePlaceholder]; });
     }
+    function parseNutrientValue(value) {
+        if (typeof value === 'string') {
+            return parseFloat(value.replace(/,/g, '')) || 0;
+        }
+        return parseFloat(value) || 0;
+    }
     function renderNutritionCircle(nutrient, total, maxValue, color, size = 'large') {
         const percentage = Math.min((total / maxValue) * 100, 100);
         let unit = '';
@@ -187,9 +269,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 4. CORE APP LOGIC ---
-    async function startCamera() { try { if (currentStream) stopCameraStream(); currentStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false }); DOM.media.cameraPreview.srcObject = currentStream; await DOM.media.cameraPreview.play(); switchScreen('camera'); } catch (err) { displayError(new Error(err.name === "NotAllowedError" ? "Camera access was denied." : "No back camera found."), { name: err.name }); } }
-    function stopCameraStream() { if (currentStream) { currentStream.getTracks().forEach(track => track.stop()); currentStream = null; DOM.media.cameraPreview.srcObject = null; } }
-    function captureImageFromVideo() { const c = document.createElement('canvas'); c.width = DOM.media.cameraPreview.videoWidth; c.height = DOM.media.cameraPreview.videoHeight; c.getContext('2d').drawImage(DOM.media.cameraPreview, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', 0.92); }
+    async function startCamera() { try { if (currentStream) stopCameraStream(); currentStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false }); DOM.media.cameraPreview.srcObject = currentStream; await DOM.media.cameraPreview.play(); switchScreen('camera'); } catch (err) { displayError(new Error(err.name === "NotAllowedError" ? "Camera access was denied." : "No back camera found."), { name: err.name }); } } 
+    function stopCameraStream() { if (currentStream) { currentStream.getTracks().forEach(track => track.stop()); currentStream = null; DOM.media.cameraPreview.srcObject = null; } } 
+    function captureImageFromVideo() { const c = document.createElement('canvas'); c.width = DOM.media.cameraPreview.videoWidth; c.height = DOM.media.cameraPreview.videoHeight; c.getContext('2d').drawImage(DOM.media.cameraPreview, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', 0.92); } 
     function renderPreviewImage(base64Image) {
         capturedImageBase64 = base64Image;
         const canvas = DOM.media.capturedImageCanvas;
@@ -247,7 +329,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const responseJson = await response.json();
             const messageContent = responseJson.choices[0]?.message?.content;
             if (!messageContent) throw new Error('Invalid response from AI model.');
-            let analysisData = JSON.parse(messageContent);
+            let analysisData;
+            try {
+                analysisData = JSON.parse(messageContent);
+            } catch (e) {
+                console.error("Failed to parse AI response JSON:", messageContent);
+                throw new Error('Invalid response from AI model.');
+            }
             if (analysisData.error) throw new Error(`AI Error: ${analysisData.error}`);
             analysisData.imageB64 = resizedImage.split(',')[1];
             analysisData.timestamp = new Date().toISOString();
@@ -291,7 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(displays.nutrition) {
             displays.nutrition.innerHTML = '';
             for (const [nutrient, value] of Object.entries(data.nutrition)) { 
-                const item = renderNutritionCircle(nutrient, parseFloat(value) || 0, NUTRIENT_MAX_VALUES[nutrient] || 100, NUTRIENT_COLORS[nutrient] || '#333'); 
+                const item = renderNutritionCircle(nutrient, parseNutrientValue(value), NUTRIENT_MAX_VALUES[nutrient] || 100, NUTRIENT_COLORS[nutrient] || '#333'); 
                 displays.nutrition.appendChild(item); 
             }
         }
@@ -331,26 +419,84 @@ document.addEventListener('DOMContentLoaded', () => {
     function getDailyHistory() { return getFromStorage(API_CONFIG.STORAGE_KEY_DAILY_HISTORY, []); }
     function saveDailyHistory(history) { saveToStorage(API_CONFIG.STORAGE_KEY_DAILY_HISTORY, history); }
 
-    function updateDailyNutritionTotals(analysisData) { let dailyData = getDailyNutritionTotals(); if (dailyData.date !== new Date().toDateString()) { if (Object.keys(dailyData.totals).length > 0 || dailyData.log.length > 0) { const history = getDailyHistory(); history.unshift(dailyData); saveDailyHistory(history); } dailyData = { date: new Date().toDateString(), totals: {}, log: [] }; } for (const [nutrient, value] of Object.entries(analysisData.nutrition)) { const cleanNutrient = nutrient.replace(/\s*\(.*\)/, ''); dailyData.totals[cleanNutrient] = (dailyData.totals[cleanNutrient] || 0) + (parseFloat(value) || 0); } dailyData.log.push({ id: analysisData.id, title: analysisData.title, timestamp: analysisData.timestamp, nutrition: analysisData.nutrition }); saveDailyNutritionTotals(dailyData); if (currentScreenId === 'dailyNutrition') { renderDailyNutritionSummary(); renderDailyFoodLog(); } }
-    function deleteHistoryItem(id) { let history = getAnalysisHistory(); const itemToDelete = history.find(item => item.id === id); if (itemToDelete) { let dailyData = getDailyNutritionTotals(); const dailyLogItem = dailyData.log.find(log => log.id === id); if (dailyLogItem) { for (const [nutrient, value] of Object.entries(dailyLogItem.nutrition)) { const cleanNutrient = nutrient.replace(/\s*\(.*\)/, ''); dailyData.totals[cleanNutrient] = Math.max(0, (dailyData.totals[cleanNutrient] || 0) - (parseFloat(value) || 0)); } dailyData.log = dailyData.log.filter(log => log.id !== id); saveDailyNutritionTotals(dailyData); } } history = history.filter(item => item.id !== id); saveAnalysisToHistory(history); renderHistoryList(); if (currentScreenId === 'dailyNutrition') { renderDailyNutritionSummary(); renderDailyFoodLog(); } toggleDialog(DOM.dialogs.confirmation, false); }
-    function renderHistoryList() { const history = getAnalysisHistory(); const searchTerm = DOM.inputs.historySearch.value.toLowerCase(); const filteredHistory = history.filter(item => item.title.toLowerCase().includes(searchTerm)); DOM.displays.historyList.innerHTML = ''; DOM.displays.emptyHistoryState.classList.toggle('hidden', filteredHistory.length > 0); DOM.buttons.clearHistory.style.display = history.length > 0 ? 'block' : 'none'; filteredHistory.forEach(item => { const historyItem = document.createElement('div'); historyItem.className = 'history-item group flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50 transition-colors'; historyItem.dataset.id = item.id; historyItem.innerHTML = `<img src="data:image/jpeg;base64,${item.imageB64}" alt="${item.title}" class="w-16 h-16 rounded-xl object-cover flex-shrink-0 bg-gray-100"><div class="flex-grow overflow-hidden"><h4 class="font-bold text-text-dark truncate">${item.title}</h4><p class="text-sm text-text-light">${new Date(item.timestamp).toLocaleString()}</p></div><button class="delete-history-item-btn text-gray-400 hover:text-error w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Delete Item"><i class="fas fa-trash-alt"></i></button>`; historyItem.querySelector('.delete-history-item-btn').addEventListener('click', (e) => { e.stopPropagation(); showConfirmationDialog('Delete Item?', 'This will permanently delete this item from your history.', () => deleteHistoryItem(item.id)); }); historyItem.addEventListener('click', () => showHistoryDetail(item.id)); DOM.displays.historyList.appendChild(historyItem); }); if (currentScreenId !== 'history') switchScreen('history'); }
+    function updateDailyNutritionTotals(analysisData) { let dailyData = getDailyNutritionTotals(); if (dailyData.date !== new Date().toDateString()) { if (Object.keys(dailyData.totals).length > 0 || dailyData.log.length > 0) { const history = getDailyHistory(); history.unshift(dailyData); saveDailyHistory(history); } dailyData = { date: new Date().toDateString(), totals: {}, log: [] }; } for (const [nutrient, value] of Object.entries(analysisData.nutrition)) { const cleanNutrient = nutrient.replace(/\s*\(.*\)/, ''); dailyData.totals[cleanNutrient] = (dailyData.totals[cleanNutrient] || 0) + parseNutrientValue(value); } dailyData.log.push({ id: analysisData.id, title: analysisData.title, timestamp: analysisData.timestamp, nutrition: analysisData.nutrition }); saveDailyNutritionTotals(dailyData); if (currentScreenId === 'dailyNutrition') { renderDailyNutritionSummary(); renderDailyFoodLog(); } }
+    function deleteItem(id) {
+        // Remove from history
+        let history = getAnalysisHistory();
+        history = history.filter(item => item.id !== id);
+        saveAnalysisToHistory(history);
+
+        // Remove from daily log and update totals
+        let dailyData = getDailyNutritionTotals();
+        const dailyLogItem = dailyData.log.find(log => log.id === id);
+        if (dailyLogItem) {
+            for (const [nutrient, value] of Object.entries(dailyLogItem.nutrition)) {
+                const cleanNutrient = nutrient.replace(/\s*\(.*\)/, '');
+                dailyData.totals[cleanNutrient] = Math.max(0, (dailyData.totals[cleanNutrient] || 0) - parseNutrientValue(value));
+            }
+            dailyData.log = dailyData.log.filter(log => log.id !== id);
+            saveDailyNutritionTotals(dailyData);
+        }
+
+        // Re-render both screens
+        renderHistoryList();
+        renderDailyNutritionSummary();
+        renderDailyFoodLog();
+
+        toggleDialog(DOM.dialogs.confirmation, false);
+    }
+    function renderHistoryList() { const history = getAnalysisHistory(); const searchTerm = DOM.inputs.historySearch.value.toLowerCase(); const filteredHistory = history.filter(item => item.title.toLowerCase().includes(searchTerm)); DOM.displays.historyList.innerHTML = ''; DOM.displays.emptyHistoryState.classList.toggle('hidden', filteredHistory.length > 0); DOM.buttons.clearHistory.style.display = history.length > 0 ? 'block' : 'none'; filteredHistory.forEach(item => { const historyItem = document.createElement('div'); historyItem.className = 'history-item group flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50 transition-colors'; historyItem.dataset.id = item.id;
+ historyItem.innerHTML = `<img src="data:image/jpeg;base64,${item.imageB64}" alt="${item.title}" class="w-16 h-16 rounded-xl object-cover flex-shrink-0 bg-gray-100"><div class="flex-grow overflow-hidden"><h4 class="font-bold text-text-dark truncate">${item.title}</h4><p class="text-sm text-text-light">${new Date(item.timestamp).toLocaleString()}</p></div><button class="delete-history-item-btn text-gray-400 hover:text-error w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Delete Item"><i class="fas fa-trash-alt"></i></button>`; historyItem.querySelector('.delete-history-item-btn').addEventListener('click', (e) => { e.stopPropagation(); showConfirmationDialog('Delete Item?', 'This will permanently delete this item from your history.', () => deleteItem(item.id)); }); historyItem.addEventListener('click', () => showHistoryDetail(item.id)); DOM.displays.historyList.appendChild(historyItem); }); }
     function showHistoryDetail(id) { const item = getAnalysisHistory().find(h => h.id === id); if (item) { DOM.displays.historyDetailImage.src = `data:image/jpeg;base64,${item.imageB64}`; renderAnalysisResults(item, true); switchScreen('historyDetail'); } }
-    function clearAllHistory() { showConfirmationDialog('Clear History?', 'This will permanently delete all your analysis history.', () => { saveAnalysisToHistory([]); renderHistoryList(); toggleDialog(DOM.dialogs.confirmation, false); }); }
+    function clearAllHistory() {
+        showConfirmationDialog('Clear History?', 'This will permanently delete all your analysis history.', () => {
+            // Clear history
+            saveAnalysisToHistory([]);
+
+            // Clear daily nutrition
+            localStorage.removeItem(API_CONFIG.STORAGE_KEY_DAILY_NUTRITION);
+
+            // Re-render UI
+            renderHistoryList();
+            renderDailyNutritionSummary();
+            renderDailyFoodLog();
+
+            toggleDialog(DOM.dialogs.confirmation, false);
+        });
+    }
     function renderDailyNutritionSummary() { const dailyData = getDailyNutritionTotals(); DOM.displays.dailyNutritionSummaryGrid.innerHTML = ''; const nutrientOrder = ['Calories', 'Protein', 'Fat', 'Carbohydrates', 'Sugar', 'Fiber', 'Sodium']; nutrientOrder.forEach(nutrient => { const total = dailyData.totals[nutrient] || 0; const item = renderNutritionCircle(nutrient, total, NUTRIENT_MAX_VALUES[nutrient] || 100, NUTRIENT_COLORS[nutrient] || '#333', 'large'); DOM.displays.dailyNutritionSummaryGrid.appendChild(item); }); }
-    function renderDailyFoodLog() { const dailyData = getDailyNutritionTotals(); DOM.displays.dailyFoodLog.innerHTML = ''; DOM.displays.emptyDailyLogState.classList.toggle('hidden', dailyData.log.length > 0); const sortedLog = [...dailyData.log].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); sortedLog.forEach(logItem => { const logEntry = document.createElement('div'); logEntry.className = 'flex items-center p-3 bg-card-bg rounded-xl shadow-subtle'; logEntry.dataset.id = logItem.id; logEntry.innerHTML = `<div class="flex-grow"><h4 class="font-bold text-text-dark">${logItem.title}</h4><p class="text-sm text-text-light">${new Date(logItem.timestamp).toLocaleTimeString()}</p></div><button class="delete-daily-log-item-btn text-gray-400 hover:text-error w-8 h-8 flex items-center justify-center transition-colors" aria-label="Delete Log Entry"><i class="fas fa-trash-alt"></i></button>`; logEntry.querySelector('.delete-daily-log-item-btn').addEventListener('click', (e) => { e.stopPropagation(); showConfirmationDialog('Delete Log Entry?', 'This will remove this food from your daily totals.', () => deleteDailyLogItem(logItem.id)); }); DOM.displays.dailyFoodLog.appendChild(logEntry); }); }
+    function renderDailyFoodLog() { const dailyData = getDailyNutritionTotals(); DOM.displays.dailyFoodLog.innerHTML = ''; DOM.displays.emptyDailyLogState.classList.toggle('hidden', dailyData.log.length > 0);
+ const sortedLog = [...dailyData.log].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); sortedLog.forEach(logItem => { const logEntry = document.createElement('div'); logEntry.className = 'flex items-center p-3 bg-card-bg rounded-xl shadow-subtle'; logEntry.dataset.id = logItem.id;
+ logEntry.innerHTML = `<div class="flex-grow"><h4 class="font-bold text-text-dark">${logItem.title}</h4><p class="text-sm text-text-light">${new Date(logItem.timestamp).toLocaleTimeString()}</p></div><button class="delete-daily-log-item-btn text-gray-400 hover:text-error w-8 h-8 flex items-center justify-center transition-colors" aria-label="Delete Log Entry"><i class="fas fa-trash-alt"></i></button>`; logEntry.querySelector('.delete-daily-log-item-btn').addEventListener('click', (e) => { e.stopPropagation(); showConfirmationDialog('Delete Log Entry?', 'This will remove this food from your daily totals.', () => deleteItem(logItem.id)); }); DOM.displays.dailyFoodLog.appendChild(logEntry); }); }
     
 
     // Gamification & Summaries
     function updateStreak() { let streakData = getFromStorage(API_CONFIG.STORAGE_KEY_STREAK, { count: 0, lastScan: null }); const today = new Date().toDateString(); if (streakData.lastScan === today) return; const yesterday = new Date(Date.now() - 86400000).toDateString(); if (streakData.lastScan === yesterday) { streakData.count++; } else { streakData.count = 1; } streakData.lastScan = today; saveToStorage(API_CONFIG.STORAGE_KEY_STREAK, streakData); displayStreak(); }
     function displayStreak() { const streakData = getFromStorage(API_CONFIG.STORAGE_KEY_STREAK, { count: 0 }); if (streakData.count > 0) { DOM.displays.streakCount.textContent = streakData.count; DOM.displays.streak.classList.remove('hidden'); } else { DOM.displays.streak.classList.add('hidden'); } }
-    function checkAchievements(analysisData) { const achievements = getFromStorage(API_CONFIG.STORAGE_KEY_ACHIEVEMENTS, {}); const history = getAnalysisHistory(); const dailyTotals = getDailyNutritionTotals().totals; let updated = false; if (!achievements.scan1) { achievements.scan1 = true; updated = true; showAlert("Achievement Unlocked!", ACHIEVEMENTS.scan1.title); }
-    if (!achievements.scan5 && history.length >= 5) { achievements.scan5 = true; updated = true; showAlert("Achievement Unlocked!", ACHIEVEMENTS.scan5.title); }
-    if (!achievements.streak3 && getFromStorage(API_CONFIG.STORAGE_KEY_STREAK, { count: 0 }).count >= 3) { achievements.streak3 = true; updated = true; showAlert("Achievement Unlocked!", ACHIEVEMENTS.streak3.title); }
-    if (!achievements.proteinPro && (dailyTotals.Protein || 0) >= 50) { achievements.proteinPro = true; updated = true; showAlert("Achievement Unlocked!", ACHIEVEMENTS.proteinPro.title); }
-    if (updated) saveToStorage(API_CONFIG.STORAGE_KEY_ACHIEVEMENTS, achievements); } 
+    function checkAchievements(analysisData) {
+        const achievements = getFromStorage(API_CONFIG.STORAGE_KEY_ACHIEVEMENTS, {});
+        const history = getAnalysisHistory();
+        const dailyTotals = getDailyNutritionTotals().totals;
+        let updated = false;
+
+        if (!achievements.scan1) { achievements.scan1 = true; updated = true; showAlert("Achievement Unlocked!", ACHIEVEMENTS.scan1.title); }
+        if (!achievements.scan5 && history.length >= 5) { achievements.scan5 = true; updated = true; showAlert("Achievement Unlocked!", ACHIEVEMENTS.scan5.title); }
+        if (!achievements.varietyStar && new Set(history.map(item => item.title.toLowerCase())).size >= 10) { achievements.varietyStar = true; updated = true; showAlert("Achievement Unlocked!", ACHIEVEMENTS.varietyStar.title); }
+        
+        const streak = getFromStorage(API_CONFIG.STORAGE_KEY_STREAK, { count: 0 });
+        if (!achievements.streak3 && streak.count >= 3) { achievements.streak3 = true; updated = true; showAlert("Achievement Unlocked!", ACHIEVEMENTS.streak3.title); }
+        if (!achievements.weeklyWarrior && streak.count >= 7) { achievements.weeklyWarrior = true; updated = true; showAlert("Achievement Unlocked!", ACHIEVEMENTS.weeklyWarrior.title); }
+        
+        if (!achievements.proteinPro && (dailyTotals.Protein || 0) >= 50) { achievements.proteinPro = true; updated = true; showAlert("Achievement Unlocked!", ACHIEVEMENTS.proteinPro.title); }
+        if (!achievements.calorieCounter && (dailyTotals.Calories || 0) >= 2000) { achievements.calorieCounter = true; updated = true; showAlert("Achievement Unlocked!", ACHIEVEMENTS.calorieCounter.title); }
+        if (!achievements.fiberFanatic && (dailyTotals.Fiber || 0) >= 30) { achievements.fiberFanatic = true; updated = true; showAlert("Achievement Unlocked!", ACHIEVEMENTS.fiberFanatic.title); }
+        if (!achievements.sugarSavvy && parseNutrientValue(analysisData.nutrition.Sugar) < 5) { achievements.sugarSavvy = true; updated = true; showAlert("Achievement Unlocked!", ACHIEVEMENTS.sugarSavvy.title); }
+
+        if (updated) saveToStorage(API_CONFIG.STORAGE_KEY_ACHIEVEMENTS, achievements);
+    } 
     function renderAchievements() { const unlocked = getFromStorage(API_CONFIG.STORAGE_KEY_ACHIEVEMENTS, {}); DOM.displays.achievementsList.innerHTML = ''; for (const key in ACHIEVEMENTS) { const achievement = ACHIEVEMENTS[key]; const isUnlocked = unlocked[key]; const item = document.createElement('div'); item.className = `p-4 rounded-xl flex flex-col items-center justify-center text-center ${isUnlocked ? 'bg-green-100 text-green-800 shadow-subtle' : 'bg-gray-100 text-gray-400'}`;
-    item.innerHTML = `<i class="fas ${achievement.icon} fa-3x mb-2"></i><h4 class="font-bold">${achievement.title}</h4><p class="text-xs mt-1">${achievement.description}</p>`; DOM.displays.achievementsList.appendChild(item); } switchScreen('achievements'); }
-    function renderSummaryScreen() { const history = getAnalysisHistory(); const weeklyData = history.filter(item => (new Date() - new Date(item.timestamp)) / (1000 * 60 * 60 * 24) <= 7); const weeklyAvg = { Calories: 0, Protein: 0, Fat: 0, Carbohydrates: 0 }; if (weeklyData.length > 0) { weeklyData.forEach(item => { for (const key in weeklyAvg) { weeklyAvg[key] += parseFloat(item.nutrition[key]) || 0; } }); for (const key in weeklyAvg) { weeklyAvg[key] /= weeklyData.length; } } DOM.displays.summaryContent.innerHTML = `<div class="bg-white p-6 rounded-2xl shadow-subtle"><h3 class="font-heading text-primary mb-4 text-xl">Last 7 Days Average</h3><div class="grid grid-cols-2 gap-4">${Object.entries(weeklyAvg).map(([key, value]) => `<div><p class="text-sm text-text-light">${key}</p><p class="font-bold text-2xl text-text-dark">${Math.round(value)}</p></div>`).join('')}</div></div>`; switchScreen('summary'); }
+    item.innerHTML = `<i class="fas ${achievement.icon} fa-3x mb-2"></i><h4 class="font-bold">${achievement.title}</h4><p class="text-xs mt-1">${achievement.description}</p>`; DOM.displays.achievementsList.appendChild(item); } }
+    function renderSummaryScreen() { const history = getAnalysisHistory(); const weeklyData = history.filter(item => (new Date() - new Date(item.timestamp)) / (1000 * 60 * 60 * 24) <= 7); const weeklyAvg = { Calories: 0, Protein: 0, Fat: 0, Carbohydrates: 0 }; if (weeklyData.length > 0) { weeklyData.forEach(item => { for (const key in weeklyAvg) { weeklyAvg[key] += parseNutrientValue(item.nutrition[key]); } }); for (const key in weeklyAvg) { weeklyAvg[key] /= weeklyData.length; } } DOM.displays.summaryContent.innerHTML = `<div class="bg-white p-6 rounded-2xl shadow-subtle"><h3 class="font-heading text-primary mb-4 text-xl">Last 7 Days Average</h3><div class="grid grid-cols-2 gap-4">${Object.entries(weeklyAvg).map(([key, value]) => `<div><p class="text-sm text-text-light">${key}</p><p class="font-bold text-2xl text-text-dark">${Math.round(value)}</p></div>`).join('')}</div></div>`; }
 
     // Speech, Dialogs & Sharing
     function loadVoices() { voices = speechSynthesis.getVoices(); }
@@ -375,7 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
     recognition.onend = () => voiceButton.classList.remove('ring-2', 'ring-primary');
     recognition.onerror = (event) => showAlert('Speech Error', `Speech recognition error: ${event.error}`);
     recognition.start(); }
-    function displayError(error, rawResponse = null) { console.error(error); if(DOM.displays.errorType) DOM.displays.errorType.textContent = error.name || 'Error'; if(DOM.displays.errorDetails) DOM.displays.errorDetails.textContent = error.message || 'An unknown error occurred.'; if(DOM.displays.rawErrorResponse) { DOM.displays.rawErrorResponse.textContent = rawResponse ? JSON.stringify(rawResponse, null, 2) : ''; DOM.displays.rawErrorResponse.style.display = rawResponse ? 'block' : 'none'; } switchScreen('error'); }
+    function displayError(error, rawResponse = null) { console.error(error); if(DOM.displays.errorType) DOM.displays.errorType.textContent = error.name || 'Error'; if(DOM.displays.errorDetails) DOM.displays.errorDetails.textContent = error.message || 'An unknown error occurred.'; if(DOM.displays.rawErrorResponse) { DOM.displays.rawErrorResponse.textContent = rawResponse ? JSON.stringify(rawResponse, null, 2) : ''; DOM.displays.rawErrorResponse.style.display = rawResponse ? 'block' : 'none'; } switchScreen('error'); } 
     function showConfirmationDialog(title, message, onConfirm) { const dialog = DOM.dialogs.confirmation;
     if (!dialog) return;
     const titleEl = dialog.querySelector('#confirmation-dialog-title');
@@ -408,9 +554,9 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmBtn.classList.replace('bg-error', 'bg-primary');
         cancelBtn.classList.add('hidden');
     }
-    }
+    } 
     function shareResults() { if (!lastAnalysisData) return showAlert('No Results', 'Please analyze an image first.'); const { title, nutrition } = lastAnalysisData;
-    const shareText = `I just analyzed ${title} with CuteVision! Calories: ${nutrition.Calories || 'N/A'}, Protein: ${nutrition.Protein || 'N/A'}.`;
+    const shareText = `I just analyzed ${title} with CuteVision! Calories: ${nutrition.Calories || 'N/A'}, Protein: ${nutrition.Protein || 'N/A'}`;
     if (navigator.share) {
         navigator.share({
             title: `Nutrition Facts for ${title}`,
@@ -591,8 +737,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!button) return;
             switch (key) {
                 case 'startCamera': button.addEventListener('click', startCamera); break;
-                case 'history': button.addEventListener('click', renderHistoryList); break;
-                case 'nutritionTracker': button.addEventListener('click', () => { renderDailyNutritionSummary(); renderDailyFoodLog(); switchScreen('dailyNutrition'); }); break;
+                case 'history': button.addEventListener('click', () => switchScreen('history')); break;
+                case 'nutritionTracker': button.addEventListener('click', () => switchScreen('dailyNutrition')); break;
                 case 'settings': button.addEventListener('click', () => {
                     const profile = getFromStorage(API_CONFIG.STORAGE_KEY_PROFILE, {});
                     if(DOM.inputs.profileName) DOM.inputs.profileName.value = profile.name || '';
@@ -604,8 +750,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if(DOM.inputs.languageSelect) DOM.inputs.languageSelect.value = getFromStorage(API_CONFIG.STORAGE_KEY_LANGUAGE, 'en');
                     toggleDialog(DOM.dialogs.settings, true);
                 }); break;
-                case 'achievements': button.addEventListener('click', renderAchievements); break;
-                case 'summary': button.addEventListener('click', renderSummaryScreen); break;
+                case 'achievements': button.addEventListener('click', () => switchScreen('achievements')); break;
+                case 'summary': button.addEventListener('click', () => switchScreen('summary')); break;
                 case 'chat': button.addEventListener('click', () => switchScreen('chat')); break;
                 case 'backFromChat': button.addEventListener('click', goBack); break;
                 case 'sendChat': button.addEventListener('click', handleSendMessage); break;
@@ -614,7 +760,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'closeCamera': button.addEventListener('click', () => { stopCameraStream(); goBack(); }); break;
                 case 'capture': button.addEventListener('click', () => { const img = captureImageFromVideo(); stopCameraStream(); renderPreviewImage(img); }); break;
                 case 'backFromPreview': case 'retake': case 'backToHistoryList': case 'backFromSummary': case 'backFromAchievements': button.addEventListener('click', goBack); break;
-                case 'backFromResults': case 'newPhoto': case 'backToMainFromHistory': case 'backToMainFromNutrition': case 'backToMainFromError': button.addEventListener('click', () => switchScreen('main')); break;
+                case 'backFromResults': case 'newPhoto': button.addEventListener('click', resetToMainScreen); break;
+                case 'backToMainFromHistory': button.addEventListener('click', goBack); break;
+                case 'backToMainFromNutrition': button.addEventListener('click', goBack); break;
                 case 'analyze': button.addEventListener('click', analyzeImageWithGroq); break;
                 case 'clearHistory': button.addEventListener('click', clearAllHistory); break;
                 case 'resetDailyNutrition': button.addEventListener('click', () => showConfirmationDialog('Reset Daily Totals?', 'This will clear all logged food and reset your daily nutrition totals.', () => { localStorage.removeItem(API_CONFIG.STORAGE_KEY_DAILY_NUTRITION); renderDailyNutritionSummary(); renderDailyFoodLog(); toggleDialog(DOM.dialogs.confirmation, false); })); break;
@@ -648,7 +796,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         renderPreviewImage(base64); 
                     } catch (err) { 
                         displayError(new Error('Could not read the selected file: ' + err.message)); 
-                    } 
+                    } finally {
+                        e.target.value = null;
+                    }
                 } 
             });
         }
