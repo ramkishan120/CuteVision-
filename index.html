@@ -93,7 +93,7 @@
 
         <!-- Camera Screen -->
         <main id="camera-screen" class="app-screen bg-black">
-            <video id="camera-preview" class="w-full h-full object-cover" playsinline></video>
+                        <video id="camera-preview" class="w-full h-full object-cover" muted autoplay playsinline webkit-playsinline></video>
             <button id="close-camera-btn" class="absolute top-5 left-5 text-white text-2xl bg-black/30 rounded-full w-10 h-10">&times;</button>
             <div class="absolute bottom-0 left-0 right-0 p-5 flex justify-center">
                 <button id="capture-btn" class="w-20 h-20 bg-white rounded-full border-4 border-black/20"></button>
@@ -313,6 +313,7 @@
                         <button data-tab="tab-api" class="tab-btn flex-1 p-4 text-center font-bold text-sm active">API</button>
                         <button data-tab="tab-profile" class="tab-btn flex-1 p-4 text-center font-bold text-sm">Profile</button>
                         <button data-tab="tab-app" class="tab-btn flex-1 p-4 text-center font-bold text-sm">App</button>
+                        <button data-tab="tab-logs" class="tab-btn flex-1 p-4 text-center font-bold text-sm">Logs</button>
                     </nav>
                     <div class="p-6 space-y-6">
                         <!-- API Tab -->
@@ -369,6 +370,18 @@
                                     <option value="JP">Japan</option>
                                 </select>
                             </div>
+                        </div>
+                        <!-- Logs Tab -->
+                        <div id="tab-logs" class="tab-content hidden space-y-4">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-lg font-bold text-text-dark">Application Logs</h4>
+                                <div>
+                                    <button id="copy-logs-btn" class="text-sm text-primary hover:underline">Copy</button>
+                                    <button id="clear-logs-btn" class="ml-4 text-sm text-error hover:underline">Clear</button>
+                                </div>
+                            </div>
+                            <pre id="logs-display" class="bg-gray-100 text-gray-700 text-xs p-4 rounded-lg overflow-auto h-64 w-full font-mono"></pre>
+                            <p class="text-xs text-text-light mt-1">Logs are automatically cleared every 24 hours.</p>
                         </div>
                     </div>
                 </div>
